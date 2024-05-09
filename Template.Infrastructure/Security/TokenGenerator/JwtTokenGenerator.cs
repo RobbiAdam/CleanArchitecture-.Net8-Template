@@ -10,31 +10,30 @@ namespace Template.Infrastructure.Security.TokenGenerator
     public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptions) : IJwtTokenGenerator
     {
         private readonly JwtSettings _jwtSettings = jwtOptions.Value;
-        
+
         public string GenerateToken(string userId, string userName, string email, string roles)
         {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
+
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, userId),
                 new Claim(ClaimTypes.Email, email),
                 new Claim(ClaimTypes.Name, userName),
-                //new Claim(ClaimTypes.Role, roles)
+                new Claim(ClaimTypes.Role, roles)
             };
 
             //claims.Add(new Claim(ClaimTypes.Role, IsAdmin ? "admin" : "customer"));
             //roles.ForEach(role => claims.Add(new(ClaimTypes.Role, role)));
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
-
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);           
-
             var token = new JwtSecurityToken(
                 _jwtSettings.Issuer,
-                _jwtSettings.Audience,                
+                _jwtSettings.Audience,
                 claims,
                 expires: DateTime.UtcNow.AddMinutes(_jwtSettings.TokenExpirationInMinutes),
                 signingCredentials: credentials
-                ); 
+                );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }

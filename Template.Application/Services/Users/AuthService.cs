@@ -33,7 +33,7 @@ namespace Template.Application.Services.Users
 
             var roles = user.IsAdmin ? "admin" : "user";
 
-            var token = _jwtTokenGenerator.GenerateToken(user.Id.ToString(), user.UserName, user.Email, roles);
+            var token = _jwtTokenGenerator.GenerateToken(user.Id, user.UserName, user.Email, roles);
 
             return token;
         }

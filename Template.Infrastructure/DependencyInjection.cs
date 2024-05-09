@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection.Metadata;
 using System.Text;
 using Template.Application.Common.Interfaces;
 using Template.Application.Common.Interfaces.Authentication;
@@ -46,9 +47,24 @@ namespace Template.Infrastructure
             this IServiceCollection services,
             ConfigurationManager configuration)
         {
-            var jwtSettings = JwtSettings.Section(configuration);
+            var jwtSettings = new JwtSettings();
+            configuration.Bind(JwtSettings.Section, jwtSettings);
+            
             services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.Section));
             services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+
+            services.AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(opt => opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
+                });
 
             return services;
         }
