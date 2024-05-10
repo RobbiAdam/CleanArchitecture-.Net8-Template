@@ -12,7 +12,6 @@ namespace Template.Api
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-            //services.AddSwaggerGen();
             services.AddSwaggerGen(opt =>
             {
                 opt.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme

@@ -11,7 +11,7 @@ namespace Template.Infrastructure.Security.TokenGenerator
     {
         private readonly JwtSettings _jwtSettings = jwtOptions.Value;
 
-        public string GenerateToken(string userId, string userName, string email, string roles)
+        public string GenerateToken(string userId, string userName, string email, string role)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
 
@@ -22,7 +22,7 @@ namespace Template.Infrastructure.Security.TokenGenerator
                 new Claim(ClaimTypes.NameIdentifier, userId),
                 new Claim(ClaimTypes.Email, email),
                 new Claim(ClaimTypes.Name, userName),
-                new Claim(ClaimTypes.Role, roles)
+                new Claim(ClaimTypes.Role, role)
             };
 
             //claims.Add(new Claim(ClaimTypes.Role, IsAdmin ? "admin" : "customer"));
