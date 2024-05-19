@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Template.Contract.Common.Bases;
 
 namespace Template.Application.Commands.Authentications.Register
 {
@@ -6,6 +7,6 @@ namespace Template.Application.Commands.Authentications.Register
         string UserName,
         string Name,
         string Email,
-        string Password) : IRequest<string>;
+        string Password) : IRequest<BaseResponse<string>>;
 
 }

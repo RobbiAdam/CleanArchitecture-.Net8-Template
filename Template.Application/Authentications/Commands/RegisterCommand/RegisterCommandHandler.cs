@@ -1,12 +1,13 @@
-﻿using Template.Application.Common.Interfaces;
+﻿using Template.Application.Commands.Authentications.Register;
+using Template.Application.Common.Interfaces;
 using Template.Application.Common.Interfaces.Repositories;
+using Template.Contract.Common.Bases;
 using Template.Domain.Entities;
 using MediatR;
-using Template.Application.Commands.Authentications.Register;
 
 namespace Template.Application.Authentications.Commands.Register
 {
-    internal sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, string>
+    internal sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, BaseResponse<string>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHash _passwordHasher;
@@ -20,23 +21,36 @@ namespace Template.Application.Authentications.Commands.Register
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<string> Handle(RegisterCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<string>> Handle(RegisterCommand request, CancellationToken ct)
         {
+            var response = new BaseResponse<string>();
 
             if (await _userRepository.GetByEmailAsync(request.Email) != null)
             {
-                throw new Exception("Email already registered");
+                response.Success = false;
+                response.Message = "Email already exists";
+                return response;
             }
-            var newUser = new User
+            try
             {
-                UserName = request.UserName,
-                Name = request.Name,
-                Email = request.Email,
-                Password = _passwordHasher.HashPassword(request.Password),
-            };
-            await _userRepository.AddUserAsync(newUser);
+                var newUser = new User
+                {
+                    UserName = request.UserName,
+                    Name = request.Name,
+                    Email = request.Email,
+                    Password = _passwordHasher.HashPassword(request.Password),
+                };
+                await _userRepository.AddUserAsync(newUser);
 
-            return newUser.Id;
+                response.Success = true;
+                response.Data = newUser.Id;
+                response.Message = "User created successfully";
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+            }
+            return response;
         }
     }
 }

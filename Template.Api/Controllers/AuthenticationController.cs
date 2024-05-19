@@ -1,9 +1,9 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Template.Application.Authentications.Commands.Register;
+﻿using Template.Application.Commands.Authentications.Register;
 using Template.Application.Services.Users;
 using Template.Contract.Authentications;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MediatR;
 
 namespace Template.Api.Controllers
 {
@@ -22,16 +22,20 @@ namespace Template.Api.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterCommand command)
+        public async Task<IActionResult> Register([FromBody] RegisterCommand command, CancellationToken ct)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-           
-            var result = await _mediator.Send(command);
-            //await _authService.RegisterAsync(command);
-            return Ok(result);
+
+            var response = await _mediator.Send(command, ct);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
         }
 
         [HttpPost]
