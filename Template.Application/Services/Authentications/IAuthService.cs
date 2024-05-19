@@ -6,5 +6,6 @@ namespace Template.Application.Services.Users
     {
         Task<string> LoginAsync(LoginRequest request);
         Task<bool> RegisterAsync(RegisterRequest request);
+        Task<bool> ChangePasswordAsync(ChangePasswordRequest request);
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Template.Application.Common.Interfaces;
 using Template.Application.Common.Interfaces.Authentication;
+using Template.Application.Common.Interfaces.Repositories;
 using Template.Infrastructure.Common.Persistence;
 using Template.Infrastructure.Repositories;
 using Template.Infrastructure.Security.PasswordHasher;
@@ -36,7 +37,7 @@ namespace Template.Infrastructure
             {
                 var connectionString = configuration.GetConnectionString("AuthDb");
                 opt.UseSqlite(connectionString);
-            });
+            });            
 
             services.AddScoped<IUserRepository, UserRepository>();
             return services;
@@ -74,7 +75,7 @@ namespace Template.Infrastructure
         {
             services.AddSingleton<IPasswordHash, PasswordHash>();
             return services;
-        }
+        }      
 
 
     }

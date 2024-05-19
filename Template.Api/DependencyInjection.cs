@@ -9,8 +9,8 @@ namespace Template.Api
         {
             services.AddControllers();
             services.AddEndpointsApiExplorer();
-
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            services.AddMediatR(cfg => 
+            cfg.RegisterServicesFromAssembly(Application.AssemblyReference.Assembly));
 
             services.AddSwaggerGen(opt =>
             {
