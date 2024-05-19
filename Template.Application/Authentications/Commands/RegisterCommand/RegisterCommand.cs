@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Template.Contract.Common.Bases;
 
-namespace Template.Application.Commands.Authentications.Register
+namespace Template.Application.Authentications.Commands.RegisterCommand
 {
     public sealed record RegisterCommand(
         string UserName,

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Template.Application.Services.Users;
 
 namespace Template.Application
 {
@@ -7,7 +6,6 @@ namespace Template.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddScoped<IAuthService, AuthService>();
             services.AddHttpContextAccessor();
             
             return services;

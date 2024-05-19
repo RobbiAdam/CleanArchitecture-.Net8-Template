@@ -1,17 +1,15 @@
-﻿using Template.Application.Commands.Authentications.Register;
+﻿using MediatR;
 using Template.Application.Common.Interfaces;
 using Template.Application.Common.Interfaces.Repositories;
 using Template.Contract.Common.Bases;
 using Template.Domain.Entities;
-using MediatR;
 
-namespace Template.Application.Authentications.Commands.Register
+namespace Template.Application.Authentications.Commands.RegisterCommand
 {
     internal sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, BaseResponse<string>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHash _passwordHasher;
-
 
         public RegisterCommandHandler(
             IUserRepository userRepository,

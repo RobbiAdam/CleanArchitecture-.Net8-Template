@@ -1,9 +1,9 @@
-﻿using Template.Application.Commands.Authentications.Register;
-using Template.Application.Services.Users;
-using Template.Contract.Authentications;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MediatR;
+using Template.Application.Authentications.Commands.ChangePasswordCommand;
+using Template.Application.Authentications.Commands.LoginCommand;
+using Template.Application.Authentications.Commands.RegisterCommand;
 
 namespace Template.Api.Controllers
 {
@@ -11,56 +11,48 @@ namespace Template.Api.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IAuthService _authService;
         private readonly IMediator _mediator;
 
-        public AuthenticationController(IAuthService authService, IMediator mediator)
+        public AuthenticationController(IMediator mediator)
         {
-            _authService = authService;
             _mediator = mediator;
         }
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterCommand command, CancellationToken ct)
+        public async Task<IActionResult> RegisterAsync([FromBody] RegisterCommand command, CancellationToken ct)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var response = await _mediator.Send(command, ct);
             if (response.Success)
             {
                 return Ok(response);
             }
-
             return BadRequest(response);
         }
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> LoginAsync([FromBody] LoginCommand command, CancellationToken ct)
         {
-            if (!ModelState.IsValid)
+            var response = await _mediator.Send(command, ct);
+            if (response.Success)
             {
-                return BadRequest(ModelState);
+                return Ok(response);
             }
-            var response = await _authService.LoginAsync(request);
-            return Ok(response);
+            return BadRequest(response);
         }
 
         [HttpPut]
         [Route("change-password")]
         [Authorize]
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordCommand command, CancellationToken ct)
         {
-            if (!ModelState.IsValid)
+            var response = await _mediator.Send(command, ct);
+            if (response.Success)
             {
-                return BadRequest(ModelState);
+                return Ok(response);
             }
-            var response = await _authService.ChangePasswordAsync(request);
-            return Ok(response);
+            return BadRequest(response);
         }
     }
 }
