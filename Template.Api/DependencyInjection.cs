@@ -1,5 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Template.Api.Handlers;
 
 namespace Template.Api
 {
@@ -22,6 +23,8 @@ namespace Template.Api
                 });
                 opt.OperationFilter<SecurityRequirementsOperationFilter>();
             });
+
+            services.AddExceptionHandler<ExceptionHandler>();
 
             return services;
         }

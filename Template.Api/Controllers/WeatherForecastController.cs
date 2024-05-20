@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Template.Contract.Errors;
+using Template.Contract.Exceptions;
 
 namespace WebApplication1.Controllers
 {
@@ -31,6 +33,33 @@ namespace WebApplication1.Controllers
             })
             .ToArray();
         }
+
+        [HttpGet]
+        [Route("internal-error")]
+        public IActionResult InternalError()
+        {
+            throw new Exception("Internal Error Happened");
+        }
+
+        [HttpGet]
+        [Route("notfound-error")]
+        public IActionResult GetNotFoundWeather()
+        {
+            throw new NotFoundException("Weather not found");
+        }
+
+        [HttpGet]
+        [Route("validation-error")]
+        public IActionResult GetValidationError()
+        {
+            var validationErrors = new List<ValidationError>
+            {
+                new() { PropertyName = "City", Message = "City is required" },
+                new() { PropertyName = "Date", Message = "Date is invalid" }
+            };
+
+            throw new CustomValidationError(validationErrors);
+        }
     }
 
     public class WeatherForecast
@@ -43,4 +72,6 @@ namespace WebApplication1.Controllers
 
         public string? Summary { get; set; }
     }
+
+
 }
