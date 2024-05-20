@@ -1,6 +1,6 @@
 ﻿using Template.Domain.Entities;
 
-namespace Template.Application.Common.Interfaces
+namespace Template.Application.Common.Interfaces.Repositories
 {
     public interface IUserRepository
     {

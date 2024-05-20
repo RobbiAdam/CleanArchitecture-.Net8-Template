@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Template.Application.Common.Interfaces;
+using Template.Application.Common.Interfaces.Repositories;
 using Template.Domain.Entities;
 using Template.Infrastructure.Common.Persistence;
 
