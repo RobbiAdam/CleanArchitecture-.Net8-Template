@@ -23,11 +23,11 @@ namespace Template.Api.Controllers
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterCommand command, CancellationToken ct)
         {
             var response = await _mediator.Send(command, ct);
-            if (response.Success)
+            if (!response.Success)
             {
-                return Ok(response);
+                return BadRequest(response);
             }
-            return BadRequest(response);
+            return Ok(response);
         }
 
         [HttpPost]
@@ -35,11 +35,11 @@ namespace Template.Api.Controllers
         public async Task<IActionResult> LoginAsync([FromBody] LoginCommand command, CancellationToken ct)
         {
             var response = await _mediator.Send(command, ct);
-            if (response.Success)
+            if (!response.Success)
             {
-                return Ok(response);
+                return BadRequest(response);
             }
-            return BadRequest(response);
+            return Ok(response);
         }
 
         [HttpPut]
@@ -48,11 +48,11 @@ namespace Template.Api.Controllers
         public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordCommand command, CancellationToken ct)
         {
             var response = await _mediator.Send(command, ct);
-            if (response.Success)
+            if (!response.Success)
             {
-                return Ok(response);
+                return BadRequest(response);
             }
-            return BadRequest(response);
+            return Ok(response);
         }
     }
 }

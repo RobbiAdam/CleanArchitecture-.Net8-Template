@@ -7,13 +7,13 @@ using Template.Contract.Common.Bases;
 
 namespace Template.Application.Authentications.Commands.ChangePasswordCommand
 {
-    internal sealed class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordCommand, BaseResponse<bool>>
+    internal sealed class ChangePasswordHandler : IRequestHandler<ChangePasswordCommand, BaseResponse<bool>>
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IPasswordHash _passwordHasher;
         private readonly IUserRepository _userRepository;
 
-        public ChangePasswordCommandHandler(
+        public ChangePasswordHandler(
             IUserRepository userRepository,
             IPasswordHash passwordHasher,
             IHttpContextAccessor contextAccessor)

@@ -6,13 +6,13 @@ using Template.Contract.Common.Bases;
 
 namespace Template.Application.Authentications.Commands.LoginCommand
 {
-    internal sealed record LoginCommandHandler : IRequestHandler<LoginCommand, BaseResponse<string>>
+    internal sealed record LoginHandler : IRequestHandler<LoginCommand, BaseResponse<string>>
     {
         private readonly IPasswordHash _passwordHasher;
         private readonly IUserRepository _userRepository;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-        public LoginCommandHandler(
+        public LoginHandler(
             IJwtTokenGenerator jwtTokenGenerator,
             IUserRepository userRepository,
             IPasswordHash passwordHasher)
@@ -32,7 +32,6 @@ namespace Template.Application.Authentications.Commands.LoginCommand
                 response.Message = "Invalid Email or Password";
                 return response;
             }
-
             try
             {
                 var roles = user.IsAdmin ? "admin" : "user";

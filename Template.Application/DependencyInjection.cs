@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Template.Application.Common.Mappings;
 
 namespace Template.Application
 {
@@ -7,7 +8,8 @@ namespace Template.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
-            
+            MappingConfig.Configure();
+
             return services;
         }
     }

@@ -6,12 +6,12 @@ using Template.Domain.Entities;
 
 namespace Template.Application.Authentications.Commands.RegisterCommand
 {
-    internal sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, BaseResponse<string>>
+    internal sealed class RegisterHandler : IRequestHandler<RegisterCommand, BaseResponse<string>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHash _passwordHasher;
 
-        public RegisterCommandHandler(
+        public RegisterHandler(
             IUserRepository userRepository,
             IPasswordHash passwordHasher)
         {
