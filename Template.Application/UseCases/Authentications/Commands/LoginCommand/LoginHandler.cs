@@ -2,11 +2,12 @@
 using Template.Application.Common.Interfaces;
 using Template.Application.Common.Interfaces.Authentication;
 using Template.Application.Common.Interfaces.Repositories;
-using Template.Contract.Common.Bases;
+using Template.Domain.Common;
+using Template.Domain.Users;
 
-namespace Template.Application.Authentications.Commands.LoginCommand
+namespace Template.Application.UseCases.Authentications.Commands.LoginCommand
 {
-    internal sealed record LoginHandler : IRequestHandler<LoginCommand, BaseResponse<string>>
+    internal sealed record LoginHandler : IRequestHandler<LoginCommand, Result<string>>
     {
         private readonly IPasswordHash _passwordHasher;
         private readonly IUserRepository _userRepository;
@@ -21,32 +22,25 @@ namespace Template.Application.Authentications.Commands.LoginCommand
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
         }
-        public async Task<BaseResponse<string>> Handle(LoginCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(LoginCommand request, CancellationToken ct)
         {
-            var response = new BaseResponse<string>();
             var user = await _userRepository.GetByEmailAsync(request.Email);
 
             if (user == null || !_passwordHasher.VerifyPassword(request.Password, user.Password))
-            {
-                response.Success = false;
-                response.Message = "Invalid Email or Password";
-                return response;
+            {                
+                return UserErrors.InvalidEmailOrPassword;
             }
             try
             {
                 var roles = user.IsAdmin ? "admin" : "user";
                 var token = _jwtTokenGenerator.GenerateToken(user.Id, user.UserName, user.Email, roles);
 
-                response.Success = true;
-                response.Message = "Login Successful";
-                response.Data = token;
+                return token;
             }
             catch (Exception ex)
             {
-                response.Success = false;
-                response.Message = ex.Message;
+                throw new Exception(ex.Message, ex);
             }
-            return response;
         }
     }
 }

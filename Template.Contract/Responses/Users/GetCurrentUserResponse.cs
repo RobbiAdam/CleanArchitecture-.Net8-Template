@@ -1,7 +1,7 @@
 ﻿using Template.Contract.Dto;
 
-namespace Template.Contract.Response.Users
+namespace Template.Contract.Responses.Users
 {
     public record GetCurrentUserResponse(UserDto UserDto);
-    
+
 }

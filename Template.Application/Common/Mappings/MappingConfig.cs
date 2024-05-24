@@ -1,6 +1,6 @@
 ﻿using Mapster;
-using Template.Contract.Response.Users;
-using Template.Domain.Entities;
+using Template.Contract.Responses.Users;
+using Template.Domain.Users;
 
 namespace Template.Application.Common.Mappings
 {

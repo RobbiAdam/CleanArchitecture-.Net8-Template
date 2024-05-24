@@ -1,12 +1,12 @@
 ﻿using MediatR;
 using Template.Application.Common.Interfaces;
 using Template.Application.Common.Interfaces.Repositories;
-using Template.Contract.Common.Bases;
-using Template.Domain.Entities;
+using Template.Domain.Common;
+using Template.Domain.Users;
 
-namespace Template.Application.Authentications.Commands.RegisterCommand
+namespace Template.Application.UseCases.Authentications.Commands.RegisterCommand
 {
-    internal sealed class RegisterHandler : IRequestHandler<RegisterCommand, BaseResponse<string>>
+    internal sealed class RegisterHandler : IRequestHandler<RegisterCommand, Result<string>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHash _passwordHasher;
@@ -19,15 +19,11 @@ namespace Template.Application.Authentications.Commands.RegisterCommand
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<BaseResponse<string>> Handle(RegisterCommand request, CancellationToken ct)
+        public async Task<Result<string>> Handle(RegisterCommand request, CancellationToken ct)
         {
-            var response = new BaseResponse<string>();
-
             if (await _userRepository.GetByEmailAsync(request.Email) != null)
             {
-                response.Success = false;
-                response.Message = "Email already exists";
-                return response;
+                return UserErrors.EmailAlreadyExist;
             }
             try
             {
@@ -39,16 +35,13 @@ namespace Template.Application.Authentications.Commands.RegisterCommand
                     Password = _passwordHasher.HashPassword(request.Password),
                 };
                 await _userRepository.AddUserAsync(newUser);
-
-                response.Success = true;
-                response.Data = newUser.Id;
-                response.Message = "User created successfully";
+                string result = newUser.Id;
+                return result;
             }
             catch (Exception ex)
             {
-                response.Message = ex.Message;
+                throw new Exception(ex.Message);
             }
-            return response;
         }
     }
 }

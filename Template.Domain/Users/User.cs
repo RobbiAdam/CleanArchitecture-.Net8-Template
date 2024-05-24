@@ -1,4 +1,6 @@
-﻿namespace Template.Domain.Entities
+﻿using Template.Domain.Abstractions;
+
+namespace Template.Domain.Users
 {
     public class User : BaseEntity
     {

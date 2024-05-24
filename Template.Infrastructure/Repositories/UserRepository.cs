@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Template.Application.Common.Interfaces.Repositories;
-using Template.Domain.Entities;
+using Template.Domain.Users;
 using Template.Infrastructure.Common.Persistence;
 
 namespace Template.Infrastructure.Repositories

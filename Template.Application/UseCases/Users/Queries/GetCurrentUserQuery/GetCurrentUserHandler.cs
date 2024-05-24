@@ -3,12 +3,13 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Template.Application.Common.Interfaces.Repositories;
-using Template.Contract.Common.Bases;
-using Template.Contract.Response.Users;
+using Template.Contract.Responses.Users;
+using Template.Domain.Common;
+using Template.Domain.Users;
 
-namespace Template.Application.Users.Queries.GetCurrentUserQuery
+namespace Template.Application.UseCases.Users.Queries.GetCurrentUserQuery
 {
-    public class GetCurrentUserHandler : IRequestHandler<GetCurrentUserQuery, BaseResponse<GetCurrentUserResponse>>
+    public class GetCurrentUserHandler : IRequestHandler<GetCurrentUserQuery, Result<GetCurrentUserResponse>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IHttpContextAccessor _contextAccessor;
@@ -19,24 +20,22 @@ namespace Template.Application.Users.Queries.GetCurrentUserQuery
             _userRepository = userRepository;
         }
 
-        public async Task<BaseResponse<GetCurrentUserResponse>> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
-        {
-            var response = new BaseResponse<GetCurrentUserResponse>();
+        public async Task<Result<GetCurrentUserResponse>> Handle(GetCurrentUserQuery request, CancellationToken ct)
+        {            
             var user = GetCurrentUser();
             try
             {
                 var currentUser = await _userRepository.GetByEmailAsync(user);
-                response.Success = currentUser != null;
-                response.Message = response.Success ? "User found" : "User not found";
-                response.Data = currentUser.Adapt<GetCurrentUserResponse>();
+                if (currentUser == null)
+                {
+                    return UserErrors.UserNotFound;
+                }
+                return currentUser.Adapt<GetCurrentUserResponse>();               
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                response.Success = false;
-                response.Message = ex.Message;
+                throw new Exception(ex.Message);
             }
-
-            return response;
         }
 
         private string GetCurrentUser()

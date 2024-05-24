@@ -1,4 +1,4 @@
-﻿using Template.Domain.Entities;
+﻿using Template.Domain.Users;
 
 namespace Template.Application.Common.Interfaces.Repositories
 {

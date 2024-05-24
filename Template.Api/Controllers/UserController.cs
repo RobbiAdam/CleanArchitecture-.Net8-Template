@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Template.Application.Users.Queries.GetCurrentUserQuery;
+using Template.Application.UseCases.Users.Queries.GetCurrentUserQuery;
 
 namespace Template.Api.Controllers
 {
@@ -18,10 +18,10 @@ namespace Template.Api.Controllers
         [HttpGet]
         [Route("me")]
         [Authorize]
-        public async Task<IActionResult> GetUserAsync(CancellationToken ct)
+        public async Task<IActionResult> GetCurrentUserAsync(CancellationToken ct)
         {
             var response = await _mediator.Send(new GetCurrentUserQuery(), ct);
-            if (!response.Success)
+            if (!response.IsSuccess)
             {
                 return BadRequest(response);
             }

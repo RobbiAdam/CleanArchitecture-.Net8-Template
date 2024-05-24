@@ -1,4 +1,4 @@
-﻿namespace Template.Domain.Entities
+﻿namespace Template.Domain.Abstractions
 {
     public abstract class BaseEntity
     {

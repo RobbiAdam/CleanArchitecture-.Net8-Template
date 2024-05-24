@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Template.Application.Common.Interfaces;
 using Template.Application.Common.Interfaces.Repositories;
-using Template.Contract.Common.Bases;
+using Template.Domain.Common;
+using Template.Domain.Users;
 
-namespace Template.Application.Authentications.Commands.ChangePasswordCommand
+namespace Template.Application.UseCases.Authentications.Commands.ChangePasswordCommand
 {
-    internal sealed class ChangePasswordHandler : IRequestHandler<ChangePasswordCommand, BaseResponse<bool>>
+    internal sealed class ChangePasswordHandler : IRequestHandler<ChangePasswordCommand, Result<bool>>
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IPasswordHash _passwordHasher;
@@ -23,47 +24,36 @@ namespace Template.Application.Authentications.Commands.ChangePasswordCommand
             _contextAccessor = contextAccessor;
         }
 
-        public async Task<BaseResponse<bool>> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
-        {
-            var response = new BaseResponse<bool>();
+        public async Task<Result<bool>> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
+        {            
 
             var currentUser = GetCurrentUser();
             if (string.IsNullOrEmpty(currentUser))
-            {
-                response.Success = false;
-                response.Message = "Invalid User";
-                return response;
+            {                
+                return UserErrors.InvalidUser;
             }
             try
             {
                 var user = await _userRepository.GetByEmailAsync(currentUser);
                 if (user == null)
                 {
-                    response.Success = false;
-                    response.Message = "User not found";
-                    return response;
+                    return UserErrors.UserNotFound;
                 }
 
                 if (!_passwordHasher.VerifyPassword(request.OldPassword, user.Password))
-                {
-                    response.Success = false;
-                    response.Message = "Invalid Password";
-                    return response;
+                {                    
+                    return UserErrors.InvalidPassword;
                 }
 
                 user.Password = _passwordHasher.HashPassword(request.NewPassword);
-                await _userRepository.UpdateUserAsync(user);
-
-                response.Success = true;
-                response.Data = true;
-                response.Message = "Password changed successfully";
-                return response;
+                await _userRepository.UpdateUserAsync(user).ConfigureAwait(false);
+                
+                return true;
             }
             catch (Exception ex)
             {
-                response.Message = ex.Message;
+                throw new Exception(ex.Message);
             }
-            return response;
         }
 
         private string GetCurrentUser()

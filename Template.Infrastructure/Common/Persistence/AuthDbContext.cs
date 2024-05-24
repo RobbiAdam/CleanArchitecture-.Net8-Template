@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Template.Domain.Entities;
+using Template.Domain.Users;
 
 namespace Template.Infrastructure.Common.Persistence
 {

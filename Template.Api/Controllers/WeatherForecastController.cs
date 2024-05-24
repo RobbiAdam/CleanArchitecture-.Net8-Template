@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Template.Contract.Errors;
 using Template.Contract.Exceptions;
 
-namespace WebApplication1.Controllers
+namespace Template.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
